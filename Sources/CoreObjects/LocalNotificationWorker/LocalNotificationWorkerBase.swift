@@ -1,5 +1,5 @@
 //
-//  LocalNotificationWorkerImpl.swift
+//  LocalNotificationWorkerBase.swift
 //  CoreObjects
 //
 //  Created by Алексей Филиппов on 15.04.2022.
@@ -8,7 +8,7 @@
 import UIKit
 import UserNotifications
 
-final class LocalNotificationWorkerImpl: LocalNotificationWorker {
+final class LocalNotificationWorkerBase: LocalNotificationWorker {
     // MARK: - Dependencies
     private let application: UIApplication
     private let notificationCenter: UNUserNotificationCenter

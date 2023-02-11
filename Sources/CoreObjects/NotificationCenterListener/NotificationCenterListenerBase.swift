@@ -1,5 +1,5 @@
 //
-//  NotificationCenterListenerImpl.swift
+//  NotificationCenterListenerBase.swift
 //  CoreObjects
 //
 //  Created by Алексей Филиппов on 22.04.2022.
@@ -12,7 +12,7 @@ import SupportCode
 import UIKit
 
 /// Реализация слушателя за нотификацитей от системы
-final class NotificationCenterListenerImpl: NotificationCenterListener {
+final class NotificationCenterListenerBase: NotificationCenterListener {
     // MARK: - Dependencies
     private let notificationCenter: NotificationCenter
     
