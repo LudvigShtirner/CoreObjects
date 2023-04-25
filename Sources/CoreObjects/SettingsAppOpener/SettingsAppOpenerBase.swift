@@ -12,7 +12,7 @@ final class SettingsAppOpenerBase: SettingsAppOpener, URLOpener {
     // MARK: - URLOpener
     var application: UIApplication
     
-    // MARK: - Life cycle
+    // MARK: - Inits
     init(application: UIApplication) {
         self.application = application
     }

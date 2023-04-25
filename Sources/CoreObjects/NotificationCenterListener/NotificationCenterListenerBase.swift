@@ -19,7 +19,7 @@ final class NotificationCenterListenerBase: NotificationCenterListener {
     // MARK: - Data
     private var observers: [String: VoidBlock] = [:]
     
-    // MARK: - Life cycle
+    // MARK: - Inits
     init(notificationCenter: NotificationCenter = .default,
          notificationName: Notification.Name) {
         self.notificationCenter = notificationCenter

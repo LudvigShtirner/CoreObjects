@@ -16,7 +16,7 @@ final class LocalNotificationWorkerBase: LocalNotificationWorker {
     // MARK: - Data
     private let calendar = Calendar(identifier: .gregorian)
     
-    // MARK: - Life cycle
+    // MARK: - Inits
     init(application: UIApplication = UIApplication.shared,
          notificationCenter: UNUserNotificationCenter = UNUserNotificationCenter.current()) {
         self.application = application
