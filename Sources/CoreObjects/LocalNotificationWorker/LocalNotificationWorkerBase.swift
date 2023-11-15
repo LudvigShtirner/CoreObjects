@@ -5,7 +5,7 @@
 //  Created by Алексей Филиппов on 15.04.2022.
 //
 
-import UIKit
+import class UIKit.UIApplication
 import UserNotifications
 
 final class LocalNotificationWorkerBase: LocalNotificationWorker {

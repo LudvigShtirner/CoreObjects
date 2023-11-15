@@ -3,27 +3,33 @@
 
 import PackageDescription
 
+private let coreObjects = "CoreObjects"
+private let coreObjectsTests = "CoreObjectsTests"
+
+private let supportCode = "SupportCode"
+private let supportCodeURL = "https://github.com/LudvigShtirner/SupportCode.git"
+
 let package = Package(
-    name: "CoreObjects",
+    name: coreObjects,
     platforms: [.iOS(.v13)],
     products: [
-        // Products define the executables and libraries a package produces, and make them visible to other packages.
-        .library(
-            name: "CoreObjects",
-            targets: ["CoreObjects"]),
+        .library(name: coreObjects,
+                 targets: [coreObjects]),
     ],
     dependencies: [
-        .package(url: "https://github.com/LudvigShtirner/SupportCode.git",
+        .package(url: supportCodeURL,
                  branch: "main")
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
-            name: "CoreObjects",
-            dependencies: ["SupportCode"]),
+            name: coreObjects,
+            dependencies: [
+                .byName(name: supportCode)
+            ]),
         .testTarget(
-            name: "CoreObjectsTests",
-            dependencies: ["CoreObjects"]),
+            name: coreObjectsTests,
+            dependencies: [
+                .byName(name: coreObjects)
+            ]),
     ]
 )

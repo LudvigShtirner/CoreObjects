@@ -10,21 +10,25 @@ import SupportCode
 // Apple
 import Foundation
 
-public final class APIClient {
+public protocol APIClient: AnyObject {
+    func execute<T: Codable>(_ request: APIRequest,
+                             completion: @escaping ResultBlock<T>)
+    func execute(_ request: APIRequest,
+                 completion: @escaping ResultBlock<Data>)
+}
+
+final class APIClientBase: APIClient {
     // MARK: - Dependencies
     private let session = URLSession.shared
     private let decoder = JSONDecoder()
     
     // MARK: - Inits
-    public static let shared = APIClient()
+    static let shared = APIClientBase()
     
-    private init() {
-        
-    }
+    private init() { }
     
     // MARK: - Interface methods
     public func execute<T: Codable>(_ request: APIRequest,
-                                    expecting type: T.Type,
                                     completion: @escaping ResultBlock<T>) {
         execute(request) { [weak self] result in
             switch result {
@@ -34,7 +38,7 @@ public final class APIClient {
                     return
                 }
                 do {
-                    let result = try self.decoder.decode(type.self,
+                    let result = try self.decoder.decode(T.self,
                                                          from: data)
                     completion(.success(result))
                 } catch {
