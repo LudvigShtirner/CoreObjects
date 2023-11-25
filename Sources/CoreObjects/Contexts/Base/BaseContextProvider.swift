@@ -23,7 +23,7 @@ open class BaseContextProvider<Context: BaseContext> {
     
     // MARK: - Interface methods
     public private(set) var currentContext: Context {
-        get { return storedContext }
+        get { storedContext }
         set {
             storedContext = newValue
             observedContext.send(newValue)
