@@ -18,7 +18,7 @@ final class BluetoothWrapperBase: NSObject, BluetoothWrapper {
     
     // MARK: - Inits
     override init() {
-        centralManager = CBCentralManager(delegate: nil, queue: .main)
+        centralManager = CBCentralManager(delegate: nil, queue: DispatchQueue.main)
         super.init()
         centralManager.delegate = self
     }
@@ -31,7 +31,7 @@ final class BluetoothWrapperBase: NSObject, BluetoothWrapper {
 
 extension BluetoothWrapperBase: CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        if centralManager.state == .poweredOn {
+        if centralManager.state == CBManagerState.poweredOn {
             centralManager.scanForPeripherals(withServices: nil)
         }
     }

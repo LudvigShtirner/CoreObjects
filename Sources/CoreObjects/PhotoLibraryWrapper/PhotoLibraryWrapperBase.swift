@@ -10,38 +10,36 @@ import Foundation
 import Photos
 
 final class PhotoLibraryWrapperBase: PhotoLibraryWrapper {
-    // MARK: - Dependencies
-    private let photoLibrary: PHPhotoLibrary
-    
     // MARK: - Data
     private var isRequestingAccess = false
     
     // MARK: - Inits
-    init(photoLibrary: PHPhotoLibrary) {
-        self.photoLibrary = photoLibrary
+    init() {
     }
     
     // MARK: - PhotoLibraryWrapper
-    func requestPermission(completionBlock: @escaping (PermissionStatus) -> Void) {
+    func requestPermission() async throws -> PhotoLibraryPermissionStatus {
         let status = PHPhotoLibrary.authorizationStatus().permissionStatus
         if status != .notDetermined {
-            completionBlock(status)
-            return
+            return status
         }
-        guard isRequestingAccess else {
-            return
+        if isRequestingAccess {
+            throw RequestError.alreadyRequested
         }
         isRequestingAccess = true
-        PHPhotoLibrary.requestAuthorization { [weak self] status in
-            self?.isRequestingAccess = false
-            completionBlock(status.permissionStatus)
-        }
+        let gainedStatus = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
+        isRequestingAccess = false
+        return gainedStatus.permissionStatus
     }
+}
+
+enum RequestError: Error {
+    case alreadyRequested
 }
 
 // MARK: - Private extensions
 private extension PHAuthorizationStatus {
-    var permissionStatus: PermissionStatus {
+    var permissionStatus: PhotoLibraryPermissionStatus {
         switch self {
         case .notDetermined: return .notDetermined
         case .restricted, .denied: return .denied

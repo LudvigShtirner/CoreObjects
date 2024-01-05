@@ -18,7 +18,7 @@ final class AppLifeCycleObserverBase: AppLifeCycleObserver {
     private var listeners: [String: NotificationCenterListener] = [:]
     
     // MARK: - Life cycle
-    init(notificationCenter: NotificationCenter = .default) {
+    init(notificationCenter: NotificationCenter = NotificationCenter.default) {
         self.notificationCenter = notificationCenter
     }
     
@@ -43,17 +43,17 @@ final class AppLifeCycleObserverBase: AppLifeCycleObserver {
 fileprivate extension AppLifeCycleEvent {
     var notification: NSNotification.Name {
         switch self {
-        case .didEnterBackground: return UIApplication.didEnterBackgroundNotification
-        case .willEnterForeground: return UIApplication.willEnterForegroundNotification
-        case .didFinishLaunching: return UIApplication.didFinishLaunchingNotification
-        case .didBecomeActive: return UIApplication.didBecomeActiveNotification
-        case .willResignActive: return UIApplication.willResignActiveNotification
-        case .didReceiveMemoryWarning: return UIApplication.didReceiveMemoryWarningNotification
-        case .willTerminate: return UIApplication.willTerminateNotification
-        case .significantTimeChange: return UIApplication.significantTimeChangeNotification
-        case .backgroundRefreshStatusDidChange: return UIApplication.backgroundRefreshStatusDidChangeNotification
-        case .protectedDataWillBecomeUnavailable: return UIApplication.protectedDataWillBecomeUnavailableNotification
-        case .protectedDataDidBecomeAvailable: return UIApplication.protectedDataDidBecomeAvailableNotification
+        case AppLifeCycleEvent.didEnterBackground: return UIApplication.didEnterBackgroundNotification
+        case AppLifeCycleEvent.willEnterForeground: return UIApplication.willEnterForegroundNotification
+        case AppLifeCycleEvent.didFinishLaunching: return UIApplication.didFinishLaunchingNotification
+        case AppLifeCycleEvent.didBecomeActive: return UIApplication.didBecomeActiveNotification
+        case AppLifeCycleEvent.willResignActive: return UIApplication.willResignActiveNotification
+        case AppLifeCycleEvent.didReceiveMemoryWarning: return UIApplication.didReceiveMemoryWarningNotification
+        case AppLifeCycleEvent.willTerminate: return UIApplication.willTerminateNotification
+        case AppLifeCycleEvent.significantTimeChange: return UIApplication.significantTimeChangeNotification
+        case AppLifeCycleEvent.backgroundRefreshStatusDidChange: return UIApplication.backgroundRefreshStatusDidChangeNotification
+        case AppLifeCycleEvent.protectedDataWillBecomeUnavailable: return UIApplication.protectedDataWillBecomeUnavailableNotification
+        case AppLifeCycleEvent.protectedDataDidBecomeAvailable: return UIApplication.protectedDataDidBecomeAvailableNotification
         }
     }
 }

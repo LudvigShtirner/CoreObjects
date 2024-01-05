@@ -24,15 +24,15 @@ final class FaceIdManagerBase: FaceIdManager {
         var error: NSError?
         if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,
                                      error: &error) {
-            return .success
+            return Result.success
         }
-        return .failure(.customError(error))
+        return Result.failure(.customError(error))
     }
     
     func useFaceID(reason: String,
                    completion: @escaping ResultBlock<Void>) {
         switch canUseFaceID() {
-        case .success:
+        case Result.success:
             context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,
                                    localizedReason: reason) { (success, error) in
                 guard success, error == nil else {
@@ -41,7 +41,7 @@ final class FaceIdManagerBase: FaceIdManager {
                 }
                 completion(.success)
             }
-        case .failure(let error):
+        case Result.failure(let error):
             completion(.failure(error))
         }
     }

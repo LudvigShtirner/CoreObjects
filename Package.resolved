@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "supportcode",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/LudvigShtirner/SupportCode.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "25dd10624012a7be9c873f2cf5e5aff6658a775a"
+      }
+    }
+  ],
+  "version" : 2
+}

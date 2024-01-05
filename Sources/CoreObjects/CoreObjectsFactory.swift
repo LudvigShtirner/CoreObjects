@@ -9,7 +9,7 @@
 import UIKit
 import UserNotifications
 
-public struct CoreObjectsFactory {
+public enum CoreObjectsFactory {
     // MARK: - Interface methods
     public static func buildApiClient() -> APIClient {
         return APIClientBase.shared
@@ -38,6 +38,10 @@ public struct CoreObjectsFactory {
     }
     
     public static func buildPhotoLibrary() -> PhotoLibraryWrapper {
-        PhotoLibraryWrapperBase(photoLibrary: .shared())
+        PhotoLibraryWrapperBase()
+    }
+    
+    public static func buildPlistParser() -> PlistFileParser {
+        PlistFileParserBase()
     }
 }

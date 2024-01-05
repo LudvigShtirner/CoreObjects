@@ -14,7 +14,7 @@ final class LocalNotificationWorkerBase: LocalNotificationWorker {
     private let notificationCenter: UNUserNotificationCenter
     
     // MARK: - Data
-    private let calendar = Calendar(identifier: .gregorian)
+    private let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
     
     // MARK: - Inits
     init(application: UIApplication = UIApplication.shared,
@@ -32,8 +32,15 @@ final class LocalNotificationWorkerBase: LocalNotificationWorker {
         content.userInfo = configuration.userInfo ?? [:]
         content.badge = NSNumber(1)
         
-        let dateComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second, .timeZone],
-                                                     from: date)
+        let dateComponents = calendar.dateComponents([
+            Calendar.Component.year,
+            Calendar.Component.month,
+            Calendar.Component.day,
+            Calendar.Component.hour,
+            Calendar.Component.minute,
+            Calendar.Component.second,
+            Calendar.Component.timeZone
+        ], from: date)
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents,
                                                     repeats: false)
         let request = UNNotificationRequest(identifier: configuration.typeIdentifier,

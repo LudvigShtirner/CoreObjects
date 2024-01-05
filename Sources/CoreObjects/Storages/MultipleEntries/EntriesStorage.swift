@@ -13,12 +13,10 @@ import Foundation
 public protocol EntriesAsyncStorage: AnyObject {
     associatedtype StoredType
     
-    func obtainAll(completion: @escaping ResultBlock<[StoredType]>)
-    func obtain(with predicate: @escaping (StoredType) -> Bool,
-                completion: @escaping ResultBlock<[StoredType]>)
-    func store(_ model: StoredType,
-               completion: @escaping ResultBlock<Void>)
-    func clear(completion: @escaping ResultBlock<Void>)
+    func obtainAll() async -> [StoredType]
+    func obtain(with predicate: @escaping (StoredType) -> Bool) async -> [StoredType]
+    func store(_ model: StoredType) async
+    func clear() async
 }
 
 public protocol EntriesStorage: AnyObject {

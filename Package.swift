@@ -3,28 +3,40 @@
 
 import PackageDescription
 
+struct RemotePackage {
+    let name: String
+    let productName: String
+    let url: String
+    
+    init(name: String,
+         productName: String? = nil,
+         url: String) {
+        self.name = name
+        self.productName = productName ?? name
+        self.url = url
+    }
+}
+
 private let coreObjects = "CoreObjects"
 private let coreObjectsTests = "CoreObjectsTests"
 
-private let supportCode = "SupportCode"
-private let supportCodeURL = "https://github.com/LudvigShtirner/SupportCode.git"
+private let supportCode = RemotePackage(name: "SupportCode",
+                                        url: "https://github.com/LudvigShtirner/SupportCode.git")
 
 let package = Package(
     name: coreObjects,
-    platforms: [.iOS(.v13)],
+    platforms: [.iOS(.v15)],
     products: [
-        .library(name: coreObjects,
-                 targets: [coreObjects]),
+        .library(name: coreObjects, targets: [coreObjects]),
     ],
     dependencies: [
-        .package(url: supportCodeURL,
-                 branch: "main")
+        .package(url: supportCode.url, branch: "main")
     ],
     targets: [
         .target(
             name: coreObjects,
             dependencies: [
-                .byName(name: supportCode)
+                .byName(name: supportCode.name)
             ]),
         .testTarget(
             name: coreObjectsTests,

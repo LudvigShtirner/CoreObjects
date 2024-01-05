@@ -19,7 +19,7 @@ final class NotificationCenterListener {
     // MARK: - Life Cycle
     init(notificationCenter: NotificationCenter,
          notification: NSNotification.Name,
-         handler: @escaping () -> Void) {
+         handler: @escaping VoidBlock) {
         self.notificationCenter = notificationCenter
         
         startObserve(notification: notification,

@@ -32,7 +32,7 @@ final class APIClientBase: APIClient {
                                     completion: @escaping ResultBlock<T>) {
         execute(request) { [weak self] result in
             switch result {
-            case .success(let data):
+            case Result.success(let data):
                 guard let self else {
                     completion(.failure(APIClientError.deallocated))
                     return
@@ -44,7 +44,7 @@ final class APIClientBase: APIClient {
                 } catch {
                     completion(.failure(error))
                 }
-            case .failure(let error):
+            case Result.failure(let error):
                 completion(.failure(error))
             }
         }

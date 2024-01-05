@@ -9,12 +9,10 @@
 import Foundation
 
 public protocol PhotoLibraryWrapper: AnyObject {
-    /// Запросить доступ к записи и чтению
-    /// - Parameter completionBlock: блок операций после выбора статуса доступа
-    func requestPermission(completionBlock: @escaping (PermissionStatus) -> Void)
+    func requestPermission() async throws -> PhotoLibraryPermissionStatus
 }
 
-public enum PermissionStatus {
+public enum PhotoLibraryPermissionStatus {
     case notDetermined
     case granted
     case limited
@@ -22,8 +20,8 @@ public enum PermissionStatus {
     
     public var hasAccess: Bool {
         switch self {
-        case .notDetermined, .denied: return false
-        case .granted, .limited: return true
+        case PhotoLibraryPermissionStatus.notDetermined, PhotoLibraryPermissionStatus.denied: return false
+        case PhotoLibraryPermissionStatus.granted, PhotoLibraryPermissionStatus.limited: return true
         }
     }
 }
