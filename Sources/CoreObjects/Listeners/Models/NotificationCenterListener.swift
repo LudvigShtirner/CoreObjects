@@ -19,7 +19,7 @@ final class NotificationCenterListener {
     // MARK: - Life Cycle
     init(notificationCenter: NotificationCenter,
          notification: NSNotification.Name,
-         handler: @escaping VoidBlock) {
+         handler: @escaping (Notification) -> Void) {
         self.notificationCenter = notificationCenter
         
         startObserve(notification: notification,
@@ -32,11 +32,11 @@ final class NotificationCenterListener {
     
     // MARK: - Private methods
     private func startObserve(notification: NSNotification.Name,
-                              handler: @escaping VoidBlock) {
+                              handler: @escaping (Notification) -> Void) {
         observeKey = notificationCenter.addObserver(forName: notification,
                                                     object: nil,
-                                                    queue: nil) { _ in
-            handler()
+                                                    queue: nil) { notification in
+            handler(notification)
         }
     }
 }

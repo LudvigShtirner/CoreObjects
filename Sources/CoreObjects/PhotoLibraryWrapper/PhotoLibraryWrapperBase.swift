@@ -6,22 +6,36 @@
 //
 
 // Apple
-import Foundation
+import UIKit
 import Photos
+import PhotosUI
+import Combine
 
-final class PhotoLibraryWrapperBase: PhotoLibraryWrapper {
+final class PhotoLibraryWrapperBase: NSObject {
+    // MARK: - Dependencies
+    private let photoLibrary: PHPhotoLibrary
+    
     // MARK: - Data
     private var isRequestingAccess = false
+    private let __currentStatus: CurrentValueSubject<PhotoLibraryPermissionStatus, Never>
+    private let __changePublisher = PassthroughSubject<PHChange, Never>()
     
     // MARK: - Inits
-    init() {
+    init(photoLibrary: PHPhotoLibrary) {
+        self.photoLibrary = photoLibrary
+        self.__currentStatus = .init(PHPhotoLibrary.authorizationStatus(for: .readWrite).permissionStatus)
+        super.init()
+        
+        registerIfCan(status: __currentStatus.value)
     }
-    
-    // MARK: - PhotoLibraryWrapper
-    func requestPermission() async throws -> PhotoLibraryPermissionStatus {
-        let status = PHPhotoLibrary.authorizationStatus().permissionStatus
+}
+
+// MARK: - PhotoLibraryWrapper
+extension PhotoLibraryWrapperBase: PhotoLibraryWrapper {
+    func requestPermission() async throws {
+        let status = __currentStatus.value
         if status != .notDetermined {
-            return status
+            return
         }
         if isRequestingAccess {
             throw RequestError.alreadyRequested
@@ -29,10 +43,63 @@ final class PhotoLibraryWrapperBase: PhotoLibraryWrapper {
         isRequestingAccess = true
         let gainedStatus = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
         isRequestingAccess = false
-        return gainedStatus.permissionStatus
+        let permissionStatus = gainedStatus.permissionStatus
+        registerIfCan(status: permissionStatus)
+        __currentStatus.value = permissionStatus
+    }
+    
+    func obtainFolders(fetchOptions: PHFetchOptions) async -> [PHAssetCollection] {
+        let collection: [PHAssetCollection] = await withCheckedContinuation { continuation in
+            let smartAlbums = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .any, options: nil)
+            var result = [PHAssetCollection]()
+            smartAlbums.enumerateObjects { (album, _, _) in
+                result.append(album)
+            }
+            let albums = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: nil)
+            albums.enumerateObjects { (album, _, _) in
+                result.append(album)
+            }
+            continuation.resume(returning: result)
+        }
+        return collection
+    }
+    
+    func getContent(of album: PHAssetCollection,
+                    fetchOptions: PHFetchOptions) async -> PHFetchResult<PHAsset> {
+        let fetchResult: PHFetchResult<PHAsset> = await withCheckedContinuation { continuation in
+            let result = PHAsset.fetchAssets(in: album, options: fetchOptions)
+            continuation.resume(returning: result)
+        }
+        return fetchResult
+    }
+    
+    var currentStatus: CurrentValueSubject<PhotoLibraryPermissionStatus, Never> { __currentStatus }
+    var changePublisher: AnyPublisher<PHChange, Never> { __changePublisher.eraseToAnyPublisher() }
+    
+    func presentLimitedLibraryPicker(from viewController: UIViewController) async -> [String] {
+        return await photoLibrary.presentLimitedLibraryPicker(from: viewController)
     }
 }
 
+// MARK: - Private methods
+private extension PhotoLibraryWrapperBase {
+    func registerIfCan(status: PhotoLibraryPermissionStatus) {
+        let currentStatus = __currentStatus.value
+        guard currentStatus == .granted || currentStatus == .limited else {
+            return
+        }
+        photoLibrary.register(self)
+    }
+}
+
+// MARK: - PHPhotoLibraryChangeObserver
+extension PhotoLibraryWrapperBase: PHPhotoLibraryChangeObserver {
+    func photoLibraryDidChange(_ changeInstance: PHChange) {
+        __changePublisher.send(changeInstance)
+    }
+}
+
+// MARK: - Subtypes
 enum RequestError: Error {
     case alreadyRequested
 }
@@ -45,8 +112,7 @@ private extension PHAuthorizationStatus {
         case .restricted, .denied: return .denied
         case .authorized: return .granted
         case .limited: return .limited
-        @unknown default:
-            fatalError("")
+        @unknown default: return .notDetermined
         }
     }
 }

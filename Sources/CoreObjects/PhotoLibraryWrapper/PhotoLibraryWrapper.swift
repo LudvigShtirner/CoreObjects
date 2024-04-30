@@ -6,10 +6,20 @@
 //
 
 // Apple
-import Foundation
+import UIKit
+import Photos
+import Combine
 
 public protocol PhotoLibraryWrapper: AnyObject {
-    func requestPermission() async throws -> PhotoLibraryPermissionStatus
+    var currentStatus: CurrentValueSubject<PhotoLibraryPermissionStatus, Never> { get }
+    var changePublisher: AnyPublisher<PHChange, Never> { get }
+    
+    func requestPermission() async throws
+    func obtainFolders(fetchOptions: PHFetchOptions) async -> [PHAssetCollection]
+    func getContent(of album: PHAssetCollection,
+                    fetchOptions: PHFetchOptions) async -> PHFetchResult<PHAsset>
+    
+    func presentLimitedLibraryPicker(from viewController: UIViewController) async -> [String]
 }
 
 public enum PhotoLibraryPermissionStatus {

@@ -18,7 +18,7 @@ final class AppLifeCycleObserverBase: AppLifeCycleObserver {
     private var listeners: [String: NotificationCenterListener] = [:]
     
     // MARK: - Life cycle
-    init(notificationCenter: NotificationCenter = NotificationCenter.default) {
+    init(notificationCenter: NotificationCenter) {
         self.notificationCenter = notificationCenter
     }
     
@@ -27,8 +27,9 @@ final class AppLifeCycleObserverBase: AppLifeCycleObserver {
                      handler: @escaping VoidBlock) -> String {
         let notification = event.notification
         let listener = NotificationCenterListener(notificationCenter: notificationCenter,
-                                                  notification: notification,
-                                                  handler: handler)
+                                                  notification: notification) { _ in
+            handler()
+        }
         let key = UUID().uuidString
         listeners[key] = listener
         return key

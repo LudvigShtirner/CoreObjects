@@ -49,7 +49,7 @@ final class FaceIdManagerBase: FaceIdManager {
     // MARK: - Private methods
     private func testInfoPlistForFaceIdValue(infoPlistDictionary: [String: Any]) {
         if infoPlistDictionary["NSFaceIDUsageDescription"] == nil {
-           fatalError("Privacy - Face ID Usage Description in info.plist doesn't set")
+            assertionFailure("Privacy - Face ID Usage Description in info.plist doesn't set")
         }
     }
 }

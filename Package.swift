@@ -18,6 +18,7 @@ struct RemotePackage {
 }
 
 private let coreObjects = "CoreObjects"
+private let coreObjectsMocks = "CoreObjectsMocks"
 private let coreObjectsTests = "CoreObjectsTests"
 
 private let supportCode = RemotePackage(name: "SupportCode",
@@ -27,21 +28,23 @@ let package = Package(
     name: coreObjects,
     platforms: [.iOS(.v15)],
     products: [
-        .library(name: coreObjects, targets: [coreObjects]),
+        .library(name: coreObjects, targets: [coreObjects, coreObjectsMocks]),
     ],
     dependencies: [
         .package(url: supportCode.url, branch: "main")
     ],
     targets: [
-        .target(
-            name: coreObjects,
-            dependencies: [
-                .byName(name: supportCode.name)
-            ]),
-        .testTarget(
-            name: coreObjectsTests,
-            dependencies: [
-                .byName(name: coreObjects)
-            ]),
+        .target(name: coreObjects,
+                dependencies: [
+                    .byName(name: supportCode.name)
+                ]),
+        .target(name: coreObjectsMocks,
+                dependencies: [
+                    .byName(name: coreObjects)
+                ]),
+        .testTarget(name: coreObjectsTests,
+                    dependencies: [
+                        .byName(name: coreObjects)
+                    ]),
     ]
 )

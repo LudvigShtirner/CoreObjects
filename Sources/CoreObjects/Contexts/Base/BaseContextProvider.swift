@@ -12,38 +12,31 @@ import Combine
 open class BaseContextProvider<Context: BaseContext> {
     // MARK: - Data
     private let initialContext: Context
-    private var storedContext: Context
-    private let observedContext = PassthroughSubject<Context, Never>()
+    private let storedContext: CurrentValueSubject<Context, Never>
     
     // MARK: - Life Cycle
     public init(initialContext: Context) {
         self.initialContext = initialContext
-        storedContext = initialContext
+        storedContext = .init(initialContext)
     }
     
     // MARK: - Interface methods
-    public private(set) var currentContext: Context {
-        get { storedContext }
-        set {
-            storedContext = newValue
-            observedContext.send(newValue)
-        }
+    public var currentContext: Context {
+        get { storedContext.value }
+        set { storedContext.value = newValue }
     }
     
-    public func observeContextUpdates() -> PassthroughSubject<Context, Never>{
-        observedContext
-    }
-    
-    public func updateContext(with newContext: Context) {
-        currentContext = newContext
+    public func observeContextUpdates() -> AnyPublisher<Context, Never>{
+        storedContext.eraseToAnyPublisher()
     }
     
     public func updateContext<T>(_ keyPath: WritableKeyPath<Context, T>, with value: T) {
-        currentContext[keyPath: keyPath] = value
-        updateContext(with: currentContext)
+        var context = currentContext
+        context[keyPath: keyPath] = value
+        currentContext = context
     }
     
     public func resetContext() {
-        updateContext(with: initialContext)
+        currentContext = initialContext
     }
 }

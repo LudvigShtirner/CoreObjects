@@ -38,7 +38,7 @@ public enum CoreObjectsFactory {
     }
     
     public static func buildPhotoLibrary() -> PhotoLibraryWrapper {
-        PhotoLibraryWrapperBase()
+        PhotoLibraryWrapperBase(photoLibrary: .shared())
     }
     
     public static func buildPlistParser() -> PlistFileParser {
