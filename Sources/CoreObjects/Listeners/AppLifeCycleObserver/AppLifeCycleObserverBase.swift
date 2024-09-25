@@ -23,8 +23,8 @@ final class AppLifeCycleObserverBase: AppLifeCycleObserver {
     }
     
     // MARK: - NotificationService
-    func subscribeOn(_ event: AppLifeCycleEvent,
-                     handler: @escaping VoidBlock) -> String {
+    func subscribe(on event: AppLifeCycleEvent,
+                   handler: @escaping VoidBlock) -> String {
         let notification = event.notification
         let listener = NotificationCenterListener(notificationCenter: notificationCenter,
                                                   notification: notification) { _ in

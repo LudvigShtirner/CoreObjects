@@ -26,7 +26,9 @@ final class PhotoLibraryWrapperBase: NSObject {
         self.__currentStatus = .init(PHPhotoLibrary.authorizationStatus(for: .readWrite).permissionStatus)
         super.init()
         
-        registerIfCan(status: __currentStatus.value)
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.registerIfCan(status: self.__currentStatus.value)
+        }
     }
 }
 

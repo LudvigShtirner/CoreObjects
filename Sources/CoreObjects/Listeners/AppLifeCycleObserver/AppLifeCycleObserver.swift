@@ -11,8 +11,8 @@ import SupportCode
 import Foundation
 
 public protocol AppLifeCycleObserver: AnyObject {
-    func subscribeOn(_ event: AppLifeCycleEvent,
-                     handler: @escaping VoidBlock) -> String
+    func subscribe(on event: AppLifeCycleEvent,
+                   handler: @escaping VoidBlock) -> String
     @discardableResult
     func unsubscribe(with key: String) -> Bool
 }
